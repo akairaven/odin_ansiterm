@@ -61,7 +61,6 @@ readInput :: proc() -> rune {
 		}
 	}
 	return 0
-	// return 'q'
 }
 
 enableVTMode :: proc() {
@@ -74,10 +73,6 @@ enableVTMode :: proc() {
 	raw &= ~win32.ENABLE_ECHO_INPUT
 	raw &= ~win32.ENABLE_LINE_INPUT
 	raw |= win32.ENABLE_VIRTUAL_TERMINAL_INPUT // returns VT/ansi sequences
-	// new_mode := current_mode | windows.ENABLE_MOUSE_INPUT | windows.ENABLE_WINDOW_INPUT;
-	// raw |= win32.ENABLE_MOUSE_INPUT
-	// raw |= win32.ENABLE_MOUSE_INPUT | win32.ENABLE_WINDOW_INPUT;
-	// raw |= current_mode | windows.ENABLE_MOUSE_INPUT | windows.ENABLE_WINDOW_INPUT;
 	raw &= ~win32.ENABLE_PROCESSED_INPUT // handles ctrl-c
 
 	ok = win32.SetConsoleMode(stdin, raw)
@@ -91,13 +86,7 @@ disableVTMode :: proc() {
 	win32.SetConsoleMode(stdin, origMode)
 }
 
-// @(win32: "subsystem:console") // Ensure it runs as a console application
 keyboardInput :: proc() {
-	// if stdin == win32.INVALID_HANDLE_VALUE {
-	//     fmt.println("Failed to get input handle");
-	//     return;
-	// }
-
 	previous_key: u16
 	frame := 0
 	for {
@@ -149,11 +138,6 @@ keyboardInput :: proc() {
 							key_event.wVirtualKeyCode,
 						)
 					}
-					// fmt.printf(
-					// 	"Key pressed: %v (Virtual Key: %d)\n",
-					// 	key_event.uChar.UnicodeChar,
-					// 	key_event.wVirtualKeyCode,
-					// )
 					if key_event.wVirtualKeyCode == win32.VK_ESCAPE {
 						return // Exit on Escape key
 					}
@@ -167,20 +151,9 @@ keyboardInput :: proc() {
 					}
 					previous_key = key
 				}
-			case .MOUSE_EVENT:
-				// Handle mouse events here if enabled with SetConsoleMode
-				mouse_event := input_record.Event.MouseEvent
-				fmt.printf(
-					"Mouse event at X:%d, Y:%d\n",
-					mouse_event.dwMousePosition.X,
-					mouse_event.dwMousePosition.Y,
-				)
 			}
 		}
 	}
-	// stdin := win32.GetStdHandle(win32.STD_INPUT_HANDLE)
-	// assert_contextless(stdin != win32.INVALID_HANDLE_VALUE)
-
 }
 
 setUTF8Terminal :: proc() {
