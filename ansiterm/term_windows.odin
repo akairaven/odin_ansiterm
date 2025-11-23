@@ -86,6 +86,7 @@ disableVTMode :: proc() {
 	win32.SetConsoleMode(stdin, origMode)
 }
 
+/* WIP non blocking input */
 keyboardInput :: proc() {
 	previous_key: u16
 	frame := 0
